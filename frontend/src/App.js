@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import ReactMapGL, { Marker, Popup } from "react-map-gl";
+
 import { Room, Star } from "@material-ui/icons";
 import axios from "axios";
 import { format } from "timeago.js";
@@ -26,14 +27,6 @@ function App() {
     latitude: 47.040182,
     longitude: 17.071727,
     zoom: 4,
-
-    dragPan: true,
-    dragRotate: true,
-    scrollZoom: true,
-    touchZoom: true,
-    touchRotate: true,
-    keyboard: true,
-    doubleClickZoom: true,
   });
 
   const [showRegister, setShowRegister] = useState(false);
