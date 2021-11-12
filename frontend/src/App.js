@@ -43,7 +43,7 @@ function App() {
     const getPins = async () => {
       try {
         const res = await axios.get(
-          "https://map-pin-project.herokuapp.com/api/pins"
+          "https://cors-anywhere.herokuapp.com/https://map-pin-project.herokuapp.com/api/pins"
         );
 
         setPins(res.data);
@@ -85,7 +85,7 @@ function App() {
     };
     try {
       const res = await axios.post(
-        "https://map-pin-project.herokuapp.com/api/pins",
+        "https://cors-anywhere.herokuapp.com/https://map-pin-project.herokuapp.com/api/pins",
         newPin
       );
       setPins([...pins, res.data]);
@@ -99,7 +99,7 @@ function App() {
     <div>
       <ReactMapGL
         {...viewport}
-        mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
+        mapboxApiAccessToken="pk.eyJ1IjoiaGltY2hhbiIsImEiOiJja3Z0emF6eXE1NXFqMnVudXJ4aHZ4cDByIn0.tBf7PXPXz4jVs8nTZ9ai5Q"
         onViewportChange={(nextViewport) => setViewport(nextViewport)}
         mapStyle="mapbox://styles/safak/cknndpyfq268f17p53nmpwira"
         onDblClick={handleAddClick}

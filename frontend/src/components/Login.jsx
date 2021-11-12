@@ -16,7 +16,7 @@ export default function Login({ setShowLogin, setCurrentUsername, myStorage }) {
     };
     try {
       const res = await axios.post(
-        "https://map-pin-project.herokuapp.com/api/users/login",
+        "https://cors-anywhere.herokuapp.com/https://map-pin-project.herokuapp.com/api/users/login",
         user
       );
       setCurrentUsername(res.data.username);

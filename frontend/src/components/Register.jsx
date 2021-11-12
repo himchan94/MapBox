@@ -20,7 +20,7 @@ export default function Register({ setShowRegister }) {
 
     try {
       await axios.post(
-        "https://map-pin-project.herokuapp.com/api/users/register",
+        "https://cors-anywhere.herokuapp.com/https://map-pin-project.herokuapp.com/api/users/register",
         newUser
       );
       setError(false);
