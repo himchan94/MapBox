@@ -2,7 +2,7 @@
 
 # dependencies
 froentend/node_modules/
-froentend/*.env
+# froentend/*.env
 backend/node_modules/
 backend/*.env
 
