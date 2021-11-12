@@ -6,21 +6,38 @@ import { format } from "timeago.js";
 
 import "./app.css";
 
+import Login from "./components/Login";
+import Register from "./components/Register";
+
 function App() {
-  const currentUser = "test";
+  const myStorage = window.localStorage;
+  const [currentUsername, setCurrentUsername] = useState(
+    myStorage.getItem("user")
+  );
   const [pins, setPins] = useState([]);
   const [currentPlacedId, setCurrentPlaceId] = useState(null);
   const [newPlace, setNewPlace] = useState(null);
   const [title, setTitle] = useState(null);
   const [desc, setDesc] = useState(null);
-  const [star, setStar] = useState(0);
+  const [star, setStar] = useState(1);
   const [viewport, setViewport] = useState({
     width: "100vw",
     height: "100vh",
     latitude: 47.040182,
     longitude: 17.071727,
     zoom: 4,
+
+    dragPan: true,
+    dragRotate: true,
+    scrollZoom: true,
+    touchZoom: true,
+    touchRotate: true,
+    keyboard: true,
+    doubleClickZoom: true,
   });
+
+  const [showRegister, setShowRegister] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     const getPins = async () => {
@@ -49,23 +66,28 @@ function App() {
     });
   };
 
+  const handleLogout = () => {
+    myStorage.removeItem("user");
+    setCurrentUsername(null);
+  };
+
   const handleSubmit = async (e) => {
-    // e.preventDefault();
-    // const newPin = {
-    //   username: currentUsername,
-    //   title,
-    //   desc,
-    //   rating: star,
-    //   lat: newPlace.lat,
-    //   long: newPlace.long,
-    // };
-    // try {
-    //   const res = await axios.post("/pins", newPin);
-    //   setPins([...pins, res.data]);
-    //   setNewPlace(null);
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    e.preventDefault();
+    const newPin = {
+      username: currentUsername,
+      title,
+      desc,
+      rating: star,
+      lat: newPlace.lat,
+      long: newPlace.long,
+    };
+    try {
+      const res = await axios.post("/pins", newPin);
+      setPins([...pins, res.data]);
+      setNewPlace(null);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -77,22 +99,29 @@ function App() {
         mapStyle="mapbox://styles/safak/cknndpyfq268f17p53nmpwira"
         onDblClick={handleAddClick}
         transitionDuration="200"
+        dragPan={true}
+        dragRotate={true}
+        scrollZoom={true}
+        touchZoom={true}
+        touchRotate={true}
+        keyboard={true}
+        onDrag={(e) => console.log(e)}
       >
         {pins.length !== 0 &&
-          pins.map((p) => (
-            <div>
+          pins.map((p, idx) => (
+            <div key={idx}>
               <Marker
                 latitude={p.lat}
                 longitude={p.long}
-                offsetLeft={-20}
-                offsetTop={-10}
+                offsetLeft={(-viewport.zoom * 7) / 3.5}
+                offsetTop={-viewport.zoom * 7}
               >
                 <div>
                   <Room
                     style={{
                       fontSize: viewport.zoom * 7,
                       color:
-                        p.username === currentUser ? "tomato" : "slateblue",
+                        p.username === currentUsername ? "tomato" : "slateblue",
                       cursor: "pointer",
                     }}
                     onClick={() => handleMarkerClick(p._id, p.lat, p.long)}
@@ -115,11 +144,7 @@ function App() {
                     <p>{p.desc}</p>
                     <label>Rating</label>
                     <div className="stars">
-                      <Star className="star" />
-                      <Star className="star" />
-                      <Star className="star" />
-                      <Star className="star" />
-                      <Star className="star" />
+                      {Array(p.rating).fill(<Star className="star" />)}
                     </div>
                     <label>Infromation</label>
                     <span className="username">
@@ -168,6 +193,39 @@ function App() {
               </form>
             </div>
           </Popup>
+        )}
+
+        {currentUsername ? (
+          <button className="button logout" onClick={handleLogout}>
+            Log out
+          </button>
+        ) : (
+          <div className="buttons">
+            <button
+              className="button login"
+              onClick={() => {
+                setShowLogin(true);
+              }}
+            >
+              Login
+            </button>
+            <button
+              className="button register"
+              onClick={() => {
+                setShowRegister(true);
+              }}
+            >
+              Register
+            </button>
+          </div>
+        )}
+        {showRegister && <Register setShowRegister={setShowRegister} />}
+        {showLogin && (
+          <Login
+            setShowLogin={setShowLogin}
+            myStorage={myStorage}
+            setCurrentUsername={setCurrentUsername}
+          />
         )}
       </ReactMapGL>
     </div>
